@@ -4,6 +4,7 @@ import networkx as nx
 import numpy as np
 from torch_geometric.utils import k_hop_subgraph, subgraph
 import torch
+import utils
 
 
 def load_data(dataset_name):
@@ -72,13 +73,13 @@ def prepare_data(dataset="amazon"):
     return num_node, num_edge, num_community, graph_data, nx_graph, communities
 
 
-def prepare_pretrain_data(node_list, data: Data, max_size=25, num_hop=2):
+def prepare_pretrain_data(node_list, data: Data, max_size=25, num_hop=2, corrupt=0):
     r"""Prepare pre-training data
     node_list: nodes for extracting subgraphs
     data: `PyG.Data` format graph (network) data
     max_size: maximum subgraph size
     """
-    batch = []
+    batch, corrupt_batch = [], []
 
     num_nodes = data.x.size(0)
 
@@ -105,6 +106,12 @@ def prepare_pretrain_data(node_list, data: Data, max_size=25, num_hop=2):
         g_data = Data(x=node_x, edge_index=edge_index)
         batch.append(g_data)
 
-    batch = Batch().from_data_list(batch)
+        if corrupt:
+            corrupt_data = utils.generate_corrupt_graph_view(g_data)
+            corrupt_batch.append(corrupt_data)
 
-    return batch
+    batch = Batch().from_data_list(batch)
+    if corrupt:
+        corrupt_batch = Batch().from_data_list(corrupt_batch)
+
+    return batch, corrupt_batch

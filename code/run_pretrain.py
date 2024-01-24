@@ -28,6 +28,8 @@ if __name__ == "__main__":
     #  for pretrain
     parser.add_argument("--no_pretrain", type=bool, default=False)  # if ture, perform no-pretraining
     parser.add_argument("--pretrain_method", type=str, default="ComGPPT")
+    parser.add_argument("--node_scale", type=float, default=1.0)
+    parser.add_argument("--subg_scale", type=float, default=1.0)
 
     parser.add_argument("--k", type=int, default=2)
     parser.add_argument("--max_subgraph_size", type=int, default=20)
@@ -74,6 +76,8 @@ if __name__ == "__main__":
                                        device=device,
                                        )
     print(pretrain_model.gnn)
+    num_pretrain_param = sum(p.numel() for p in pretrain_model.gnn.parameters())
+    print(f"[Parameters] Number of parameters in GNN {num_pretrain_param}")
 
     if not args.no_pretrain:
         if args.pretrain_method == "ComGPPT":
@@ -84,6 +88,8 @@ if __name__ == "__main__":
                                  epochs=args.pretrain_epoch,
                                  subg_max_size=args.max_subgraph_size,
                                  num_hop=args.k,
+                                 node_scale=args.node_scale,
+                                 subg_scale=args.subg_scale
                                  )
 
     all_candidates_emb = pretrain_model.generate_all_candidate_community_emb(

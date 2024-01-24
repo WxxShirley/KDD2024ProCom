@@ -33,6 +33,10 @@ if __name__ == "__main__":
 
     # task related
     #  for pretrain
+    parser.add_argument("--from_scratch", type=int, default=1)
+    parser.add_argument("--node_scale", type=float, default=1.0)
+    parser.add_argument("--subg_scale", type=float, default=1.0)
+
     parser.add_argument("--k", type=int, default=2)
     parser.add_argument("--max_subgraph_size", type=int, default=20)
     parser.add_argument("--num_shot", type=int, default=10)
@@ -56,6 +60,9 @@ if __name__ == "__main__":
         args.num_pred = 200
     elif args.dataset in ["dblp", "amazon", "twitter"]:
         args.num_pred = 5000
+
+    if args.dataset == "twitter":
+        args.threshold = 0.1
 
     print(args)
     print("\n")
@@ -83,9 +90,11 @@ if __name__ == "__main__":
                                        num_layers=args.n_layers,
                                        device=device)
     print(pretrain_model.gnn)
+    num_pretrain_param = sum(p.numel() for p in pretrain_model.gnn.parameters())
+    print(f"[Parameters] Number of parameters in GNN {num_pretrain_param}")
 
-    pretrain_file_path = f"pretrain_models/{args.dataset}_model.pt"
-    if os.path.exists(pretrain_file_path):
+    pretrain_file_path = f"pretrain_models/{args.dataset}_{args.node_scale}_{args.subg_scale}_model.pt"
+    if not args.from_scratch and os.path.exists(pretrain_file_path):
         pretrain_model.gnn.load_state_dict(torch.load(pretrain_file_path))
         print(f"Loading PRETRAIN-GNN file from {pretrain_file_path} !\n")
     else:
@@ -96,8 +105,11 @@ if __name__ == "__main__":
                                  lr=args.lr,
                                  epochs=args.pretrain_epoch,
                                  subg_max_size=args.max_subgraph_size,
-                                 num_hop=args.k)
-            torch.save(pretrain_model.gnn.state_dict(), pretrain_file_path)
+                                 num_hop=args.k,
+                                 node_scale=args.node_scale,
+                                 subg_scale=args.subg_scale)
+            if not args.from_scratch:
+                torch.save(pretrain_model.gnn.state_dict(), pretrain_file_path)
         print(f"Pretrain Finish!\n")
 
     ##########################################################
@@ -136,6 +148,9 @@ if __name__ == "__main__":
         prompt_model = model.PromptLinearNet(args.hidden_dim, threshold=args.threshold).to(device)
         loss_fn = torch.nn.BCELoss()
         optimizer = torch.optim.Adam(prompt_model.parameters(), lr=args.lr, weight_decay=0.00001)
+
+        num_prompt_param = sum(p.numel() for p in prompt_model.parameters())
+        print(f"[Parameters] Number of parameters in Prompt {num_prompt_param}")
 
         # Step 4.1 - Split Communities into Train / Test
         random_idx = list(range(num_community))
@@ -256,7 +271,7 @@ if __name__ == "__main__":
     avg_scores = np.mean(np.array(all_scores), axis=0)
     std_scores = np.std(np.array(all_scores), axis=0)
     print(
-        f"Overall F1 {avg_scores[0]:.4f}+-{std_scores[0]:.5f}, Overall Jaccard {avg_scores[1]:.4f}+-{std_scores[1]:.5f}, Overall ONMI {avg_scores[2]:.4f}")
+        f"Overall F1 {avg_scores[0]:.4f}+-{std_scores[0]:.5f}, Overall Jaccard {avg_scores[1]:.4f}+-{std_scores[1]:.5f}")
     print('\n## Finishing Time:', utils.get_cur_time(), flush=True)
     print('= ' * 20)
     print("Done!")

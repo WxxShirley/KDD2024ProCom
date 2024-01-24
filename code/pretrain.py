@@ -48,8 +48,8 @@ class PreTrain(nn.Module):
             maxx = min(node_num, (i + 1) * batch_size)
             minn = i * batch_size
 
-            batch = data.prepare_pretrain_data(node_list[minn:maxx].tolist(), data=graph_data, max_size=max_size,
-                                               num_hop=k)
+            batch, _ = data.prepare_pretrain_data(node_list[minn:maxx].tolist(), data=graph_data, max_size=max_size,
+                                                  num_hop=k)
             batch = batch.to(self.device)
             _, comms_emb = model(batch.x, batch.edge_index, batch.batch)
             z[minn:maxx] = comms_emb
@@ -93,20 +93,32 @@ class PreTrain(nn.Module):
         loss = - torch.log(loss).mean()
         return loss
 
-    def train_subg(self, model, batch, optimizer):
+    def train_subg(self, model, batch, optimizer, corrupt_batch=None, node_scale=1, subg_scale=0.1):
         model.train()
         batch = batch.to(self.device)
 
         z, summary = model(batch.x, batch.edge_index, batch.batch)
         optimizer.zero_grad()
 
-        loss = self.contrastive_loss(z, summary)
+        if node_scale:
+            loss = self.contrastive_loss(z, summary)
+        else:
+            loss = 0.0
+
+        if subg_scale and corrupt_batch:
+            corrupt_batch = corrupt_batch.to(self.device)
+            _, corrupt_summary = model(corrupt_batch.x, corrupt_batch.edge_index, corrupt_batch.batch)
+
+            subg_loss = self.contrastive_loss(summary, corrupt_summary)
+
+            loss += subg_scale * subg_loss
         loss.backward()
         optimizer.step()
 
         return float(loss.detach().cpu().item())
 
-    def train(self, graph_data, batch_size=128, lr=1e-3, decay=0.00001, epochs=100, subg_max_size=20, num_hop=1):
+    def train(self, graph_data, batch_size=128, lr=1e-3, decay=0.00001, epochs=100, subg_max_size=20, num_hop=1,
+              node_scale=1, subg_scale=0.1):
         optimizer = optim.Adam(self.gnn.parameters(), lr=lr, weight_decay=decay)
 
         num_nodes = graph_data.x.size(0)
@@ -115,8 +127,11 @@ class PreTrain(nn.Module):
             st = time.time()
             node_list = random.sample(range(num_nodes), batch_size)
             # Prepare data
-            batch_data = data.prepare_pretrain_data(node_list, data=graph_data, max_size=subg_max_size, num_hop=num_hop)
+            batch_data, corrupt_batch_data = data.prepare_pretrain_data(node_list, data=graph_data,
+                                                                        max_size=subg_max_size, num_hop=num_hop,
+                                                                        corrupt=subg_scale)
 
-            train_loss = self.train_subg(self.gnn, batch_data, optimizer)
+            train_loss = self.train_subg(self.gnn, batch_data, optimizer, corrupt_batch=corrupt_batch_data,
+                                         node_scale=node_scale, subg_scale=subg_scale)
             print(
                 "***epoch: {:04d} | train_loss: {:.5f} ｜ cost time {:.3}s".format(epoch, train_loss, time.time() - st))
