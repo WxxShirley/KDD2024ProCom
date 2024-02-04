@@ -1,0 +1,105 @@
+Script: python run.py --dataset=facebook  --run_times=1
+
+= = = = = = = = = = = = = = = = = = = =
+## Starting Time: 12-07 14:43:13
+Namespace(batch_size=256, dataset='facebook', device='cuda:0', generate_k=2, gnn_type='GCN', hidden_dim=128, k=2, load_raw_feature=False, lr=0.001, max_subgraph_size=20, n_layers=2, node_scale=1, num_pred=200, num_shot=10, pretrain_epoch=30, pretrain_method='ComGPPT', prompt_epoch=30, run_times=1, subg_scale=1, threshold=0.2, verbose=False)
+
+
+[FACEBOOK] #Nodes 3622, #Edges 72964, #Communities 130
+Finish loading data: Data(x=[3622, 5], edge_index=[2, 145928])
+
+Perform pre-training ...
+GNN Configuration gnn_type(GCN), num_layer(2), hidden_dim(128)
+GNNEncoder(
+  (act): LeakyReLU(negative_slope=0.01)
+  (conv_layers): ModuleList(
+    (0): GCNConv(5, 128)
+    (1): GCNConv(128, 128)
+  )
+)
+Pretrain with ComGPPT proposed community-centric SSL Loss ...
+***epoch: 0001 | train_loss: 8.06176 ｜ cost time 1.12s
+***epoch: 0002 | train_loss: 7.69304 ｜ cost time 0.586s
+***epoch: 0003 | train_loss: 7.77301 ｜ cost time 0.581s
+***epoch: 0004 | train_loss: 7.47463 ｜ cost time 0.74s
+***epoch: 0005 | train_loss: 7.36431 ｜ cost time 0.577s
+***epoch: 0006 | train_loss: 7.14939 ｜ cost time 0.578s
+***epoch: 0007 | train_loss: 6.89155 ｜ cost time 0.645s
+***epoch: 0008 | train_loss: 6.67996 ｜ cost time 0.531s
+***epoch: 0009 | train_loss: 6.46302 ｜ cost time 0.523s
+***epoch: 0010 | train_loss: 6.60389 ｜ cost time 0.662s
+***epoch: 0011 | train_loss: 6.13476 ｜ cost time 0.524s
+***epoch: 0012 | train_loss: 6.13173 ｜ cost time 0.531s
+***epoch: 0013 | train_loss: 5.96886 ｜ cost time 0.54s
+***epoch: 0014 | train_loss: 5.90521 ｜ cost time 0.538s
+***epoch: 0015 | train_loss: 5.81630 ｜ cost time 0.527s
+***epoch: 0016 | train_loss: 5.63673 ｜ cost time 0.612s
+***epoch: 0017 | train_loss: 5.50677 ｜ cost time 0.519s
+***epoch: 0018 | train_loss: 5.26674 ｜ cost time 0.514s
+***epoch: 0019 | train_loss: 5.59144 ｜ cost time 0.501s
+***epoch: 0020 | train_loss: 5.38584 ｜ cost time 0.522s
+***epoch: 0021 | train_loss: 5.34115 ｜ cost time 0.517s
+***epoch: 0022 | train_loss: 5.32386 ｜ cost time 0.586s
+***epoch: 0023 | train_loss: 4.98935 ｜ cost time 0.525s
+***epoch: 0024 | train_loss: 5.12836 ｜ cost time 0.519s
+***epoch: 0025 | train_loss: 5.19901 ｜ cost time 0.519s
+***epoch: 0026 | train_loss: 5.08501 ｜ cost time 0.511s
+***epoch: 0027 | train_loss: 4.88781 ｜ cost time 0.518s
+***epoch: 0028 | train_loss: 5.15566 ｜ cost time 0.648s
+***epoch: 0029 | train_loss: 5.06850 ｜ cost time 0.591s
+***epoch: 0030 | train_loss: 4.85151 ｜ cost time 0.583s
+[TIMER] Pretrain Finish, Cost Time 19.0818s!
+
+Pre-processing for K-EGO-NET extraction
+***pre-processing 0 finish
+Pre-preocessing Finish!
+
+Times 0
+***epoch: 0000 | PROMPT TUNING train_loss: 0.69257 | cost time 0.0266s
+***epoch: 0001 | PROMPT TUNING train_loss: 0.67730 | cost time 0.0263s
+***epoch: 0002 | PROMPT TUNING train_loss: 0.66386 | cost time 0.0256s
+***epoch: 0003 | PROMPT TUNING train_loss: 0.65335 | cost time 0.0259s
+***epoch: 0004 | PROMPT TUNING train_loss: 0.64625 | cost time 0.0266s
+***epoch: 0005 | PROMPT TUNING train_loss: 0.61447 | cost time 0.0273s
+***epoch: 0006 | PROMPT TUNING train_loss: 0.61331 | cost time 0.0266s
+***epoch: 0007 | PROMPT TUNING train_loss: 0.60826 | cost time 0.0268s
+***epoch: 0008 | PROMPT TUNING train_loss: 0.60983 | cost time 0.0262s
+***epoch: 0009 | PROMPT TUNING train_loss: 0.57636 | cost time 0.0274s
+***epoch: 0010 | PROMPT TUNING train_loss: 0.55098 | cost time 0.0284s
+***epoch: 0011 | PROMPT TUNING train_loss: 0.54989 | cost time 0.0259s
+***epoch: 0012 | PROMPT TUNING train_loss: 0.53352 | cost time 0.0269s
+***epoch: 0013 | PROMPT TUNING train_loss: 0.51544 | cost time 0.0264s
+***epoch: 0014 | PROMPT TUNING train_loss: 0.52016 | cost time 0.0274s
+***epoch: 0015 | PROMPT TUNING train_loss: 0.49462 | cost time 0.0256s
+***epoch: 0016 | PROMPT TUNING train_loss: 0.49904 | cost time 0.0275s
+***epoch: 0017 | PROMPT TUNING train_loss: 0.49105 | cost time 0.0243s
+***epoch: 0018 | PROMPT TUNING train_loss: 0.46819 | cost time 0.0265s
+***epoch: 0019 | PROMPT TUNING train_loss: 0.43646 | cost time 0.0274s
+***epoch: 0020 | PROMPT TUNING train_loss: 0.45841 | cost time 0.0252s
+***epoch: 0021 | PROMPT TUNING train_loss: 0.40909 | cost time 0.0258s
+***epoch: 0022 | PROMPT TUNING train_loss: 0.40866 | cost time 0.027s
+***epoch: 0023 | PROMPT TUNING train_loss: 0.41773 | cost time 0.0273s
+***epoch: 0024 | PROMPT TUNING train_loss: 0.40498 | cost time 0.0272s
+***epoch: 0025 | PROMPT TUNING train_loss: 0.37438 | cost time 0.0278s
+***epoch: 0026 | PROMPT TUNING train_loss: 0.39511 | cost time 0.0276s
+***epoch: 0027 | PROMPT TUNING train_loss: 0.37404 | cost time 0.0273s
+***epoch: 0028 | PROMPT TUNING train_loss: 0.37681 | cost time 0.0241s
+***epoch: 0029 | PROMPT TUNING train_loss: 0.38378 | cost time 0.0262s
+[TIMER] Prompt Tuning Finish, Cost Time 0.8112s!
+
+Finish Candidate Generation!
+Finish Candidate Embedding Computation!
+
+[TIMER] Finish Inference, Cost Time 3.8923s!
+P, R, F, J AvgAxis0:  [0.48427354 0.49342904 0.40082478 0.28250984]
+P, R, F, J AvgAxis1:  [0.44019701 0.39871588 0.35285115 0.25435071]
+AvgF1 0.3768  AvgJaccard 0.2684  Detect percent 0.5883
+Predicted communitys #200, avg size 17.4100
+
+
+Overall F1 0.3768+-0.0000, Overall Jaccard 0.2684+-0.0000
+
+## Finishing Time: 12-07 14:43:40
+[TIMER] Run 1 Times, Total Time 27.0117s
+= = = = = = = = = = = = = = = = = = = =
+Done!
