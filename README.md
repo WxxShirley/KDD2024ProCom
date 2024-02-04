@@ -81,3 +81,9 @@ For semi-supervised methods, we run their released codes under 10-shot setting, 
 * CLARE [Official Implementation](https://github.com/FDUDSDE/KDD2022CLARE)
 
 ![performance](README.assets/performance.jpg)
+
+### TODO
+
+- [ ] Upload pre-trained model files
+- [ ] Check all the codes and uploaded logs
+- [ ] Improve the README.md file
