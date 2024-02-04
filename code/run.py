@@ -51,9 +51,6 @@ if __name__ == "__main__":
 
     # Prompt related
     parser.add_argument("--threshold", type=float, default=0.2)
-
-    # Results analysis
-    parser.add_argument("--verbose", type=bool, default=False)
     args = parser.parse_args()
     # for facebook, only predict 200 communities
     if args.dataset == "facebook":
@@ -238,7 +235,7 @@ if __name__ == "__main__":
         print(f"Finish Candidate Embedding Computation, Cost Time {time.time() - st_time:.5}s!\n")
 
         train_com_emb = train_com_emb.detach().cpu().numpy()
-        pred_comms, raw_pred_comms = [], []
+        pred_comms = []
         # st_time = time.time()
         for i in range(args.num_shot):
             query = train_com_emb[i, :]
@@ -255,16 +252,11 @@ if __name__ == "__main__":
                 neighs = candidate_comms[idx]
                 if neighs not in pred_comms:
                     pred_comms.append(neighs)
-                    raw_pred_comms.append(raw_candidate_comms[idx])
                     length += 1
 
         f1, jaccard = metrics.eval_scores(pred_comms, test_comms, tmp_print=True)
         all_scores.append([f1, jaccard])
         utils.pred_community_analysis(pred_comms)
-        if args.verbose:
-            print(f"Verbose mode for RAW predicted communities ... ")
-            f1, jaccard = metrics.eval_scores(raw_pred_comms, test_comms, tmp_print=True)
-            utils.pred_community_analysis(raw_pred_comms)
         print("\n")
         del prompt_model
 
