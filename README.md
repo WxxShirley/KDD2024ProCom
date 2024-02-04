@@ -66,7 +66,6 @@ Descriptions of arguments (for more options, please refer to `run.py`)
 
 We have uploaded some running logs under the `logs` folder for reference.
 
---- 
 
 ## Performance 
 

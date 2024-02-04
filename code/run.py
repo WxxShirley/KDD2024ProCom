@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # Dataset choices
     #  ['amazon', 'dblp', 'lj', 'facebook', 'twitter']
     parser.add_argument("--dataset", type=str, default="amazon_small")
-    parser.add_argument("--seeds", type=list, default=[2023, 12345, 42, 6666, 0, 1999, 2020, 12345678, 9999, 1, 2, 3])
+    parser.add_argument("--seeds", type=list, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     parser.add_argument("--device", type=str, default="cuda:1")
 
     # training related
