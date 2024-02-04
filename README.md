@@ -2,9 +2,7 @@
 
 This is the official repo for KDD 2024 Research Track Submission paper ''**ProCom: A Few-shot Targeted Community Detection Algorithm**''.
 
-<img src="README.assets/model.jpg" alt="model" style="zoom:20%;" />
 
---- 
 
 ## Run the Codes
 
