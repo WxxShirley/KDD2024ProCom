@@ -2,7 +2,9 @@
 
 This is the official repo for KDD 2024 Research Track Submission paper ''**ProCom: A Few-shot Targeted Community Detection Algorithm**''.
 
-![model](README.assets/model.jpg)
+<img src="README.assets/model.jpg" alt="model" style="zoom:20%;" />
+
+--- 
 
 ## Run the Codes
 
@@ -30,7 +32,6 @@ This repo contains the following contents:
     ├── AMAZON_EXAMPLE.log
     ├── DBLP_EXAMPLE.log
     └── FACEBOOK_EXAMPLE.log
-
 ```
 
 ### Environmental Requirements
@@ -67,7 +68,7 @@ Descriptions of arguments (for more options, please refer to `run.py`)
 
 We have uploaded some running logs under the `logs` folder for reference.
 
-
+--- 
 
 ## Performance 
 
