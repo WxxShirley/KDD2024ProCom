@@ -2,7 +2,7 @@ Script: python run.py --dataset=facebook  --run_times=1
 
 = = = = = = = = = = = = = = = = = = = =
 ## Starting Time: 12-07 14:43:13
-Namespace(batch_size=256, dataset='facebook', device='cuda:0', generate_k=2, gnn_type='GCN', hidden_dim=128, k=2, load_raw_feature=False, lr=0.001, max_subgraph_size=20, n_layers=2, node_scale=1, num_pred=200, num_shot=10, pretrain_epoch=30, pretrain_method='ComGPPT', prompt_epoch=30, run_times=1, subg_scale=1, threshold=0.2, verbose=False)
+Namespace(batch_size=256, dataset='facebook', device='cuda:0', generate_k=2, gnn_type='GCN', hidden_dim=128, k=2, load_raw_feature=False, lr=0.001, max_subgraph_size=20, n_layers=2, node_scale=1, num_pred=200, num_shot=10, pretrain_epoch=30, pretrain_method='ProCom', prompt_epoch=30, run_times=1, subg_scale=1, threshold=0.2, verbose=False)
 
 
 [FACEBOOK] #Nodes 3622, #Edges 72964, #Communities 130
@@ -17,7 +17,7 @@ GNNEncoder(
     (1): GCNConv(128, 128)
   )
 )
-Pretrain with ComGPPT proposed community-centric SSL Loss ...
+Pretrain with ProCom proposed community-centric SSL Loss ...
 ***epoch: 0001 | train_loss: 8.06176 ｜ cost time 1.12s
 ***epoch: 0002 | train_loss: 7.69304 ｜ cost time 0.586s
 ***epoch: 0003 | train_loss: 7.77301 ｜ cost time 0.581s

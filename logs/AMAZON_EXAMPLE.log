@@ -2,7 +2,7 @@ Script: ```python run.py --dataset=amazon  --run_times=1```
 
 = = = = = = = = = = = = = = = = = = = =
 ## Starting Time: 12-07 14:45:22
-Namespace(batch_size=256, dataset='amazon', device='cuda:0', generate_k=2, gnn_type='GCN', hidden_dim=128, k=2, load_raw_feature=False, lr=0.001, max_subgraph_size=20, n_layers=2, node_scale=1, num_pred=5000, num_shot=10, pretrain_epoch=30, pretrain_method='ComGPPT', prompt_epoch=30, run_times=1, subg_scale=1, threshold=0.2, verbose=False)
+Namespace(batch_size=256, dataset='amazon', device='cuda:0', generate_k=2, gnn_type='GCN', hidden_dim=128, k=2, load_raw_feature=False, lr=0.001, max_subgraph_size=20, n_layers=2, node_scale=1, num_pred=5000, num_shot=10, pretrain_epoch=30, pretrain_method='ProCom', prompt_epoch=30, run_times=1, subg_scale=1, threshold=0.2, verbose=False)
 
 
 [AMAZON] #Nodes 13178, #Edges 33767, #Communities 4517
@@ -17,7 +17,7 @@ GNNEncoder(
     (1): GCNConv(128, 128)
   )
 )
-Pretrain with ComGPPT proposed community-centric SSL Loss ...
+Pretrain with ProCom proposed community-centric SSL Loss ...
 ***epoch: 0001 | train_loss: 7.02393 ｜ cost time 0.931s
 ***epoch: 0002 | train_loss: 6.72854 ｜ cost time 0.382s
 ***epoch: 0003 | train_loss: 6.70680 ｜ cost time 0.379s
