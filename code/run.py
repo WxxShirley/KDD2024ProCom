@@ -1,4 +1,3 @@
-from copy import deepcopy
 import data
 import metrics
 import pretrain
@@ -12,20 +11,21 @@ import os
 import math
 from torch_geometric.utils import k_hop_subgraph
 
+
 if __name__ == "__main__":
     print('= ' * 20)
     print('## Starting Time:', utils.get_cur_time(), flush=True)
 
-    parser = argparse.ArgumentParser(description="ComGPPT")
+    parser = argparse.ArgumentParser(description="ProCom")
 
     # Dataset choices
     #  ['amazon', 'dblp', 'lj', 'facebook', 'twitter']
-    parser.add_argument("--dataset", type=str, default="amazon_small")
+    parser.add_argument("--dataset", type=str, default="amazon")
     parser.add_argument("--seeds", type=list, default=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     parser.add_argument("--device", type=str, default="cuda:1")
 
     # training related
-    parser.add_argument("--pretrain_method", type=str, default="ComGPPT")
+    parser.add_argument("--pretrain_method", type=str, default="ProCom")
     parser.add_argument("--pretrain_epoch", type=int, default=30)
     parser.add_argument("--prompt_epoch", type=int, default=30)
     parser.add_argument("--lr", type=float, default=1e-3)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     #  for pretrain
     parser.add_argument("--from_scratch", type=int, default=1)
     parser.add_argument("--node_scale", type=float, default=1.0)
-    parser.add_argument("--subg_scale", type=float, default=1.0)
+    parser.add_argument("--subg_scale", type=float, default=0.1)
 
     parser.add_argument("--k", type=int, default=2)
     parser.add_argument("--max_subgraph_size", type=int, default=20)
@@ -52,6 +52,7 @@ if __name__ == "__main__":
     # Prompt related
     parser.add_argument("--threshold", type=float, default=0.2)
     args = parser.parse_args()
+
     # for facebook, only predict 200 communities
     if args.dataset == "facebook":
         args.num_pred = 200
@@ -90,13 +91,14 @@ if __name__ == "__main__":
     num_pretrain_param = sum(p.numel() for p in pretrain_model.gnn.parameters())
     print(f"[Parameters] Number of parameters in GNN {num_pretrain_param}")
 
+    # if there does not exist such a folder, please create it
     pretrain_file_path = f"pretrain_models/{args.dataset}_{args.node_scale}_{args.subg_scale}_model.pt"
     if not args.from_scratch and os.path.exists(pretrain_file_path):
         pretrain_model.gnn.load_state_dict(torch.load(pretrain_file_path))
         print(f"Loading PRETRAIN-GNN file from {pretrain_file_path} !\n")
     else:
-        if args.pretrain_method == "ComGPPT":
-            print("Pretrain with ComGPPT proposed community-centric SSL Loss ... ")
+        if args.pretrain_method == "ProCom":
+            print("Pretrain with ProCom proposed Dual-level Context-aware Loss ... ")
             pretrain_model.train(graph_data,
                                  batch_size=args.batch_size,
                                  lr=args.lr,
@@ -105,13 +107,10 @@ if __name__ == "__main__":
                                  num_hop=args.k,
                                  node_scale=args.node_scale,
                                  subg_scale=args.subg_scale)
-            if not args.from_scratch:
-                torch.save(pretrain_model.gnn.state_dict(), pretrain_file_path)
+            # We save this newly pre-trained model
+            torch.save(pretrain_model.gnn.state_dict(), pretrain_file_path)
         print(f"Pretrain Finish!\n")
 
-    ##########################################################
-    ####### Step 3 (Pre)-processing [NodeEmbed, KEgoNet] #####
-    ##########################################################
     all_node_emb = pretrain_model.generate_all_node_emb(pretrain_model.gnn, graph_data.to(device))
     all_node_emb = all_node_emb.detach()
     print("Pre-processing for K-EGO-NET extraction")
@@ -137,7 +136,7 @@ if __name__ == "__main__":
     all_scores = []
     for j in range(args.run_times):
         ##########################################################
-        ################## Step 4 Prompt Tuning ##################
+        ################## Step 3 Prompt Tuning ##################
         ##########################################################
         print(f"Times {j}")
         utils.set_seed(args.seeds[j])
@@ -149,7 +148,7 @@ if __name__ == "__main__":
         num_prompt_param = sum(p.numel() for p in prompt_model.parameters())
         print(f"[Parameters] Number of parameters in Prompt {num_prompt_param}")
 
-        # Step 4.1 - Split Communities into Train / Test
+        # Step 3.1 - Split Communities into Train / Test
         random_idx = list(range(num_community))
         np.random.shuffle(random_idx)
         print(random_idx[:args.num_shot])
@@ -167,7 +166,7 @@ if __name__ == "__main__":
             all_central_nodes, all_ego_nodes, all_labels = torch.FloatTensor().to(device), torch.FloatTensor().to(
                 device), torch.FloatTensor().to(device)
 
-            # Step 4.2 - Prepare Training data for Prompt Tuning
+            # Step 3.2 - Prepare Training data for Prompt Tuning
             for community in train_comms:
                 central_node, k_ego, label = utils.generate_prompt_tuning_data(community, graph_data, nx_graph,
                                                                                args.generate_k)
@@ -189,10 +188,10 @@ if __name__ == "__main__":
         print(f"Prompt Tuning Finish!\n")
 
         ##########################################################
-        ################## Step 5 Candidate Filtering ############
+        ################## Step 4 Candidate Filtering ############
         ##########################################################
         prompt_model.eval()
-        candidate_comms, raw_candidate_comms = [], []
+        candidate_comms = []
 
         st_time = time.time()
         for node in range(num_node):
@@ -210,11 +209,10 @@ if __name__ == "__main__":
                     candidate = [node] + candidate
 
                 candidate_comms.append(candidate)
-                raw_candidate_comms.append(deepcopy(node_k_ego))
         print(f"Finish Candidate Filtering, Cost Time {time.time() - st_time:.5}s!\n")
 
         ##########################################################
-        ######### Step 6 Matching for final Predictions ##########
+        ######### Step 5 Matching for final Predictions ##########
         ##########################################################
         candidate_com_embeds = None
 

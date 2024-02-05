@@ -11,7 +11,7 @@ if __name__ == "__main__":
     print('= ' * 20)
     print('## Starting Time:', utils.get_cur_time(), flush=True)
 
-    parser = argparse.ArgumentParser(description="ComGPPT")
+    parser = argparse.ArgumentParser(description="ProCom")
 
     # Dataset choices
     #  ['amazon', 'dblp', 'lj', 'facebook', 'twitter']
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # task related
     #  for pretrain
     parser.add_argument("--no_pretrain", type=bool, default=False)  # if ture, perform no-pretraining
-    parser.add_argument("--pretrain_method", type=str, default="ComGPPT")
+    parser.add_argument("--pretrain_method", type=str, default="ProCom")
     parser.add_argument("--node_scale", type=float, default=1.0)
     parser.add_argument("--subg_scale", type=float, default=1.0)
 
@@ -80,8 +80,8 @@ if __name__ == "__main__":
     print(f"[Parameters] Number of parameters in GNN {num_pretrain_param}")
 
     if not args.no_pretrain:
-        if args.pretrain_method == "ComGPPT":
-            print("Pretrain with ComGPPT proposed community-centric SSL Loss ... ")
+        if args.pretrain_method == "ProCom":
+            print("Pretrain with ProCom proposed Dual-level Context-aware Loss ... ")
             pretrain_model.train(graph_data,
                                  batch_size=args.batch_size,
                                  lr=args.lr,
