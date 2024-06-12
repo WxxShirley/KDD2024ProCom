@@ -42,12 +42,12 @@ This repo contains the following contents:
 ### Running Scripts
 
 Execute `code/run_pretrain.py` for the pre-training stage and saving the pre-trained model:
-```
+```shell
 python run_pretrain.py --dataset=DATASET_NAME 
 ```
 
 Execute `code/run.py` for the overall ProCom pipeline
-```
+```shell
 python run.py --dataset=DATASET_NAME  --run_times=YOUR_RUN_TIMES --subg_scale=PARAMETER_LAMBDA
 ```
 
