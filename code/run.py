@@ -35,6 +35,7 @@ if __name__ == "__main__":
     #  for pretrain
     parser.add_argument("--from_scratch", type=int, default=1)
     parser.add_argument("--node_scale", type=float, default=1.0)
+    #  [facebook, amazon, twitter] 0.01, [lj] 0.1, [dblp] 0.0
     parser.add_argument("--subg_scale", type=float, default=0.1)
 
     parser.add_argument("--k", type=int, default=2)
