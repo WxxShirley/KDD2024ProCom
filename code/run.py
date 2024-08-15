@@ -60,9 +60,6 @@ if __name__ == "__main__":
     elif args.dataset in ["dblp", "amazon", "twitter"]:
         args.num_pred = 5000
 
-    if args.dataset == "twitter":
-        args.threshold = 0.1
-
     print(args)
     print("\n")
 

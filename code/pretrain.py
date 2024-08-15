@@ -134,4 +134,4 @@ class PreTrain(nn.Module):
             train_loss = self.train_subg(self.gnn, batch_data, optimizer, corrupt_batch=corrupt_batch_data,
                                          node_scale=node_scale, subg_scale=subg_scale)
             print(
-                "***epoch: {:04d} | train_loss: {:.5f} ｜ cost time {:.3}s".format(epoch, train_loss, time.time() - st))
+                "***epoch: {:04d} | train_loss: {:.5f} | cost time {:.3}s".format(epoch, train_loss, time.time() - st))

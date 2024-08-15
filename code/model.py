@@ -39,7 +39,7 @@ class GNNEncoder(torch.nn.Module):
         if n_layer < 1:
             raise ValueError('GNN layer_num should >=2 but you set {}'.format(n_layer))
         elif n_layer == 1:
-            self.conv_layers = torch.nn.ModuleList([conv(input_dim, hidden_dim)])
+            self.conv_layers = torch.nn.ModuleList([conv(input_dim, output_dim)])
         elif n_layer == 2:
             self.conv_layers = torch.nn.ModuleList([conv(input_dim, hidden_dim), conv(hidden_dim, output_dim)])
         else:
