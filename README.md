@@ -3,6 +3,21 @@
 This is the official repo for KDD 2024 Research Track paper ''**ProCom: A Few-shot Targeted Community Detection Algorithm**''. [[Paper]](https://arxiv.org/abs/2408.07369)
 
 
+If you find this work useful in your method, you can cite the paper as below:
+```latex
+@article{wu2024procom,
+      title={ProCom: A Few-shot Targeted Community Detection Algorithm}, 
+      author={Xixi Wu and Kaiyu Xiong and Yun Xiong and Xiaoxin He and Yao Zhang and Yizhu Jiao and Jiawei Zhang},
+      year={2024},
+      eprint={2408.07369},
+      archivePrefix={arXiv},
+      primaryClass={cs.SI},
+      url={https://arxiv.org/abs/2408.07369}, 
+}
+```
+
+
+
 
 ## Run the Codes
 
@@ -42,17 +57,17 @@ This repo contains the following contents:
 ### Running Scripts
 
 Execute `code/run_pretrain.py` for the pre-training stage and saving the pre-trained model:
-```shell
+```bash
 python run_pretrain.py --dataset=DATASET_NAME 
 ```
 
 Execute `code/run.py` for the overall ProCom pipeline
-```shell
+```bash
 python run.py --dataset=DATASET_NAME  --run_times=YOUR_RUN_TIMES --subg_scale=PARAMETER_LAMBDA
 ```
 
 Descriptions of arguments (for more options, please refer to `run.py`)
-```
+```bash
 --dataset [facebook, amazon, dblp, twitter, lj]: the dataset to run 
 --num_shot: number of prompt communities, default as 10
 --num_pred: number of predicted communities
