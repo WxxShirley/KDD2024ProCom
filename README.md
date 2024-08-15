@@ -1,6 +1,6 @@
 # KDD2024ProCom
 
-This is the official repo for KDD 2024 Research Track paper ''**ProCom: A Few-shot Targeted Community Detection Algorithm**''.
+This is the official repo for KDD 2024 Research Track paper ''**ProCom: A Few-shot Targeted Community Detection Algorithm**''. [[Paper]](https://arxiv.org/abs/2408.07369)
 
 
 
